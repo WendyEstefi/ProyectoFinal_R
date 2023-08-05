@@ -1,0 +1,61 @@
+---
+title: "Proyecto Módulo R - New Dimensions"
+author: "Mercedes Gómez, Wendy Chicaiza, Jessy Suarez"
+date: "2023-08-06"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(missForest)
+library(readxl)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(palmerpenguins)
+library(purrr)
+library(ggplot2)
+```
+
+# Introducción
+
+El presente trabajo de investigación científica se centra en el análisis de la base de datos de balances suministrados por la Superintendencia de Bancos y Compañías del Ecuador.
+
+Se utilizarán ratios financieros como herramientas de medición. Los ratios financieros son indicadores clave que proporcionan una visión detallada del rendimiento económico y financiero de las empresas. En este proyecto, se utilizarán los siguientes ratios para comparar el desempeño de las empresas.
+
+-   ***Liquidez corriente:*** Esta ratio evalúa la capacidad de una empresa para cubrir sus obligaciones a corto plazo. Se calcula dividiendo el activo corriente entre el pasivo corriente.
+
+-   ***Solvencia:*** La solvencia es un indicador de la capacidad de una empresa para hacer frente a sus deudas. En este estudio, se evaluará el endeudamiento del activo, el endeudamiento patrimonial y el endeudamiento del activo fijo.
+
+-   ***Apalancamiento:*** Esta ratio muestra el grado de endeudamiento de una empresa en relación con su patrimonio. Se obtiene al dividir el activo entre el patrimonio.
+
+El enfoque de comparar empresas según su tamaño permitirá identificar posibles diferencias significativas en su salud financiera. Además, el estudio proporcionará información valiosa sobre cómo diferentes niveles de empleados directos y administrativos pueden influir en la liquidez de las pequeñas empresas.
+
+Finalmente, el trabajo también presenta un análisis del top 10 de empresas con el mayor apalancamiento, lo que arrojará luces sobre aquellas empresas que tienen una alta dependencia del endeudamiento en su estructura financiera.
+
+Mediante esta investigación, se espera aportar conocimientos útiles para comprender mejor la situación financiera de las empresas en el Ecuador, así como destacar la importancia de los indicadores financieros como herramientas fundamentales para la toma de decisiones en el ámbito empresarial.
+
+## Objetivos del proyecto
+
+1.  El objetivo principal de esta investigación es comparar el endeudamiento del activo entre empresas micro y pequeñas frente a las grandes empresas.
+
+2.  Asimismo, se pretende evaluar las diferencias en la liquidez entre pequeñas empresas que cuentan con más de 60 trabajadores directos y aquellas que tienen entre 100 y 800 trabajadores administrativo.
+
+3.  De igual manera pretende conocer las empresas con mayor apalancamiento dentro del año 2014.
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
