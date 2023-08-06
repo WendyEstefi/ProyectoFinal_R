@@ -10,7 +10,7 @@ output: pdf_document
 ### **Load packages**
 
 ```{r setup, eval=FALSE }
-knitr::opts_chunk$set(warning = TRUE)
+
 library(missForest)
 library(readxl)
 library(tidyverse)
