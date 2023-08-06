@@ -24,7 +24,6 @@ library(kableExtra)
 balances_2014 <- read_excel("Data/balances_2014.xlsx")
 ```
 
-
 # Introducción
 
 El presente trabajo de investigación científica se centra en el análisis de la base de datos de balances suministrados por la Superintendencia de Bancos y Compañías del Ecuador.
@@ -43,7 +42,6 @@ Finalmente, el trabajo también presenta un análisis del top 10 de empresas con
 
 Mediante esta investigación, se espera aportar conocimientos útiles para comprender mejor la situación financiera de las empresas en el Ecuador, así como destacar la importancia de los indicadores financieros como herramientas fundamentales para la toma de decisiones en el ámbito empresarial.
 
-
 ## Objetivos del proyecto
 
 1.  El objetivo principal de esta investigación es comparar el endeudamiento del activo entre empresas micro y pequeñas frente a las grandes empresas.
@@ -51,7 +49,6 @@ Mediante esta investigación, se espera aportar conocimientos útiles para compr
 2.  Asimismo, se pretende evaluar las diferencias en la liquidez entre pequeñas empresas que cuentan con más de 60 trabajadores directos y aquellas que tienen entre 100 y 800 trabajadores administrativo.
 
 3.  De igual manera pretende conocer las empresas con mayor apalancamiento dentro del año 2014.
-
 
 # Datos
 
@@ -103,7 +100,7 @@ Esto se entiende como:
 
 2\. ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
 
-```{r Endeudamiento del activo, eval=FALSE}
+```{r Endeudamiento del activo, eval=FALSE, fig.width=2}
 balances_2014 <- balances_2014 %>% 
     mutate(v599 = coalesce(v599, 0),
            v499 = coalesce(v499, 0)) %>%
@@ -113,7 +110,6 @@ balances_2014 <- balances_2014 %>%
 Esto se entiende como:
 
 [Endeudamiento del activo]{style="color: red;"} = Pasivo / Activo
-
 
 3.  ***Endeudamiento_patrimonial:*** Muestra el endeudamiento patrimonial de cada empresa, calculado como el cociente del pasivo entre el patrimonio neto.
 
@@ -154,7 +150,6 @@ apal <- balances_2014 %>%
 Esto se entiende como:
 
 [Apalancamiento]{style="color: red;"} = Activo / Patrimonio
-
 
 ## Análisis
 
