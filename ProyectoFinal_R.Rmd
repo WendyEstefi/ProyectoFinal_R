@@ -5,8 +5,11 @@ date: "2023-08-06"
 output: pdf_document
 ---
 
+### **Setup** 
+
+### **Load packages**
+
 ```{r setup, eval=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
 
 library(missForest)
 library(readxl)
