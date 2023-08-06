@@ -19,9 +19,11 @@ library(dplyr)
 library(palmerpenguins)
 library(purrr)
 library(ggplot2)
+library(kableExtra)
 
 balances_2014 <- read_excel("Data/balances_2014.xlsx")
 ```
+
 
 # Introducción
 
@@ -41,6 +43,7 @@ Finalmente, el trabajo también presenta un análisis del top 10 de empresas con
 
 Mediante esta investigación, se espera aportar conocimientos útiles para comprender mejor la situación financiera de las empresas en el Ecuador, así como destacar la importancia de los indicadores financieros como herramientas fundamentales para la toma de decisiones en el ámbito empresarial.
 
+
 ## Objetivos del proyecto
 
 1.  El objetivo principal de esta investigación es comparar el endeudamiento del activo entre empresas micro y pequeñas frente a las grandes empresas.
@@ -49,13 +52,14 @@ Mediante esta investigación, se espera aportar conocimientos útiles para compr
 
 3.  De igual manera pretende conocer las empresas con mayor apalancamiento dentro del año 2014.
 
+
 # Datos
 
 El data set utilizado en este trabajo de investigación se denomina "Balances_2014" y contiene información financiera de diversas compañías del Ecuador para el año mencionado.
 
 ```{r balances, eval=FALSE}
 data(balances_2014)
-heaad(balances_2014)
+head(balances_2014)
 ```
 
 La tabla está compuesta por 9 variables, cada una de las cuales representa diferentes aspectos relevantes para el análisis financiero.
@@ -93,21 +97,66 @@ La tabla de Empresas se ha complementado con el cálculo de varios indicadores f
 
 ```
 
-2.  ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
+Esto se entiende como:
+
+[Liquidez corriente]{style="color: red;"} = Activo Corriente / Pasivo Corriente
+
+2\. ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
+
+```{r Endeudamiento del activo, eval=FALSE}
+balances_2014 <- balances_2014 %>% 
+    mutate(v599 = coalesce(v599, 0),
+           v499 = coalesce(v499, 0)) %>%
+    mutate(endeudamiento_activo_1 = ifelse(v499 == 0, NA, round(v599 / v499, 5)))
+```
+
+Esto se entiende como:
+
+[Endeudamiento del activo]{style="color: red;"} = Pasivo / Activo
+
 
 3.  ***Endeudamiento_patrimonial:*** Muestra el endeudamiento patrimonial de cada empresa, calculado como el cociente del pasivo entre el patrimonio neto.
 
+```{r Endeudamiento Patrimonial, eval=FALSE}
+patrimonio <- balances_2014 %>%
+  transmute(patrimonio = round(coalesce(v499 - v599, NA), 5))
+
+balances_2014 <- balances_2014 %>% 
+  mutate(endeudamiento_patrimonial = round(v599 / v499, 5)) %>%
+  na.omit() %>%
+  filter(!is.infinite(endeudamiento_patrimonial))
+```
+
+Esto se entiende como:
+
+[Endeudamiento Patrimonial]{style="color: red;"} = Pasivo / Patrimonio
+
 4.  ***Endeudamiento_activo_fijo:*** Indica el endeudamiento del activo fijo para cada empresa, calculado como el cociente del patrimonio neto entre el activo no corriente.
+
+```{r Endeudamiento Activo Fijo, eval=FALSE}
+endeudamiento_activof <- data.frame(balances_2014 %>% 
+  mutate(endeudamiento_activof = patrimonio/v498))
+```
+
+Esto se entiende como:
+
+[Endeudamiento Activo Fijo]{style="color: red;"} = Patrimonio / Activo No Corriente
 
 5.  ***Apalancamiento:*** Representa el apalancamiento financiero de cada empresa, calculado como el cociente del activo total entre el patrimonio neto.
 
-```{r cars}
-summary(cars)
+```{r Apalancamiento, eval=FALSE}
+apal <- balances_2014 %>%
+  mutate(apalancamiento = v499 / patrimonio) %>%
+  mutate(apalancamiento = replace(apalancamiento, is.na(apalancamiento), 0)) %>%
+  mutate(apalancamiento = round(apalancamiento, 5))
 ```
 
-## Including Plots
+Esto se entiende como:
 
-You can also embed plots, for example:
+[Apalancamiento]{style="color: red;"} = Activo / Patrimonio
+
+
+## Análisis
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
