@@ -5,7 +5,7 @@ date: "2023-08-06"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, eval=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(missForest)
@@ -16,6 +16,8 @@ library(dplyr)
 library(palmerpenguins)
 library(purrr)
 library(ggplot2)
+
+balances_2014 <- read_excel("Data/balances_2014.xlsx")
 ```
 
 # Introducción
@@ -44,7 +46,48 @@ Mediante esta investigación, se espera aportar conocimientos útiles para compr
 
 3.  De igual manera pretende conocer las empresas con mayor apalancamiento dentro del año 2014.
 
+# Datos
 
+El data set utilizado en este trabajo de investigación se denomina "Balances_2014" y contiene información financiera de diversas compañías del Ecuador para el año mencionado.
+
+```{r balances, eval=FALSE}
+data(balances_2014)
+heaad(balances_2014)
+```
+
+La tabla está compuesta por 9 variables, cada una de las cuales representa diferentes aspectos relevantes para el análisis financiero.
+
+Las variables son las siguientes:
+
+1.  ***Empresas:*** Representa el nombre de cada empresa en el dataset.
+
+2.  ***Status:*** Indica si la empresa está activa o no.
+
+3.  ***Tipo_de_empresa:*** Clasifica la empresa en diferentes tipos de entidad.
+
+4.  ***Pais:*** Indica el país de origen de la empresa (en este caso, todas las empresas son del Ecuador).
+
+5.  ***Provincia:*** Representa la provincia en la que se encuentra ubicada la empresa.
+
+6.  ***Canton:*** Representa el cantón en el que se encuentra ubicada la empresa.
+
+7.  ***Ciudad:*** Indica la ciudad donde tiene su sede la empresa.
+
+8.  ***Actividad_economica:*** Clasifica la actividad económica de la empresa según un código CIIU4 de nivel 1.
+
+9.  ***Subactividad:*** Clasifica la actividad económica de la empresa con un código CIIU4 de nivel 6, que ofrece mayor detalle sobre la actividad.
+
+La tabla de Empresas se ha complementado con el cálculo de varios indicadores financieros, que son de interés para el estudio. Los indicadores financieros presentados son:
+
+1.  ***Liquidez_corriente:*** Representa la liquidez corriente de cada empresa, calculada como el cociente del activo corriente entre el pasivo corriente.
+
+2.  ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
+
+3.  ***Endeudamiento_patrimonial:*** Muestra el endeudamiento patrimonial de cada empresa, calculado como el cociente del pasivo entre el patrimonio neto.
+
+4.  ***Endeudamiento_activo_fijo:*** Indica el endeudamiento del activo fijo para cada empresa, calculado como el cociente del patrimonio neto entre el activo no corriente.
+
+5.  ***Apalancamiento:*** Representa el apalancamiento financiero de cada empresa, calculado como el cociente del activo total entre el patrimonio neto.
 
 ```{r cars}
 summary(cars)
