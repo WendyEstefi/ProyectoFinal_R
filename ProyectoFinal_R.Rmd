@@ -159,9 +159,11 @@ Esto se entiende como:
 
 ***¿El endeudamiento del activo fue mayor en empresas micro + pequeñas vs. grandes?***
 
+
 Los resultados muestran el endeudamiento del activo total para las empresas micro + pequeñas y para las empresas grandes. Luego, se concluye que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes.
 
-Esto se infiere ya que
+Esto se infiere ya que el resultado mostrado es el siguiente:
+
 
 ***¿La liquidez por tipo de compañía es diferente entre aquellas empresas que tienen más de 60 trabajadores directos y que cuenta con 100 a 800 trabajadores administrativos?***
 
