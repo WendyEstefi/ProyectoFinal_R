@@ -9,8 +9,8 @@ output: pdf_document
 
 ### **Load packages**
 
-```{r setup, eval=FALSE}
-
+```{r setup, eval=FALSE }
+knitr::opts_chunk$set(warning = TRUE)
 library(missForest)
 library(readxl)
 library(tidyverse)
@@ -22,7 +22,9 @@ library(ggplot2)
 library(kableExtra)
 
 balances_2014 <- read_excel("Data/balances_2014.xlsx")
+
 ```
+
 
 # Introducción
 
@@ -54,9 +56,10 @@ Mediante esta investigación, se espera aportar conocimientos útiles para compr
 
 El data set utilizado en este trabajo de investigación se denomina "Balances_2014" y contiene información financiera de diversas compañías del Ecuador para el año mencionado.
 
-```{r balances, eval=FALSE, warning=TRUE}
-data(balances_2014)
-head(balances_2014)
+```{r balances, eval=FALSE}
+dim(balances_2014)
+
+# El data frame balances_2014 contiene 47033 observaciones y 347 variables.
 ```
 
 La tabla está compuesta por 9 variables, cada una de las cuales representa diferentes aspectos relevantes para el análisis financiero.
@@ -152,6 +155,19 @@ Esto se entiende como:
 [Apalancamiento]{style="color: red;"} = Activo / Patrimonio
 
 ## Análisis
+
+**Preguntas de investigación:**
+
+***¿El endeudamiento del activo fue mayor en empresas micro + pequeñas vs. grandes?***
+
+Los resultados muestran el endeudamiento del activo total para las empresas micro + pequeñas y para las empresas grandes. Luego, se concluye que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes.
+
+Esto se infiere ya que 
+
+
+***¿La liquidez por tipo de compañía es diferente entre aquellas empresas que tienen más de 60 trabajadores directos y que cuenta con 100 a 800 trabajadores administrativos?***
+
+***Top 10 de empresas con mayor apalancamiento.***
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
