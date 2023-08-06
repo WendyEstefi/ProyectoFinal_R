@@ -88,7 +88,7 @@ La tabla de Empresas se ha complementado con el cálculo de varios indicadores f
 
 1.  ***Liquidez_corriente:*** Representa la liquidez corriente de cada empresa, calculada como el cociente del activo corriente entre el pasivo corriente.
 
-```{r Liquidez Corriente, eval=FALSE, fig.width=4}
+```{r Liquidez Corriente, eval=FALSE, fig.width=2}
     # Liquidez Corriente
     balances_2014 <- balances_2014 %\>%
     mutate(v345 = coalesce(v345, 0),
