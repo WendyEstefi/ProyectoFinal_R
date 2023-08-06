@@ -25,7 +25,6 @@ balances_2014 <- read_excel("Data/balances_2014.xlsx")
 
 ```
 
-
 # Introducción
 
 El presente trabajo de investigación científica se centra en el análisis de la base de datos de balances suministrados por la Superintendencia de Bancos y Compañías del Ecuador.
@@ -59,7 +58,7 @@ El data set utilizado en este trabajo de investigación se denomina "Balances_20
 ```{r balances, eval=FALSE}
 dim(balances_2014)
 
-# El data frame balances_2014 contiene 47033 observaciones y 347 variables.
+El data frame balances_2014 contiene 47033 observaciones y 347 variables.
 ```
 
 La tabla está compuesta por 9 variables, cada una de las cuales representa diferentes aspectos relevantes para el análisis financiero.
@@ -162,8 +161,7 @@ Esto se entiende como:
 
 Los resultados muestran el endeudamiento del activo total para las empresas micro + pequeñas y para las empresas grandes. Luego, se concluye que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes.
 
-Esto se infiere ya que 
-
+Esto se infiere ya que
 
 ***¿La liquidez por tipo de compañía es diferente entre aquellas empresas que tienen más de 60 trabajadores directos y que cuenta con 100 a 800 trabajadores administrativos?***
 
