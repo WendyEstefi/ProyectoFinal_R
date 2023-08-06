@@ -5,7 +5,7 @@ date: "2023-08-06"
 output: pdf_document
 ---
 
-### **Setup** 
+### **Setup**
 
 ### **Load packages**
 
@@ -83,6 +83,15 @@ Las variables son las siguientes:
 La tabla de Empresas se ha complementado con el cálculo de varios indicadores financieros, que son de interés para el estudio. Los indicadores financieros presentados son:
 
 1.  ***Liquidez_corriente:*** Representa la liquidez corriente de cada empresa, calculada como el cociente del activo corriente entre el pasivo corriente.
+
+```{r Liquidez Corriente, eval=FALSE}
+    # Liquidez Corriente
+    balances_2014 <- balances_2014 %\>%
+    mutate(v345 = coalesce(v345, 0),
+    v539 = coalesce(v539, 0)) %\>%
+    mutate(liquidez_corriente = ifelse(v539 != 0 & is.finite(v345 / v539), round(v345 / v539, 5), NA))
+
+```
 
 2.  ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
 
