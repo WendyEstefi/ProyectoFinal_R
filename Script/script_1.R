@@ -291,9 +291,41 @@ group_by(Tipo_de_empresa)%>%
                     list( Promedio=~mean(.,na.rm =T))) %>% view("Resumen_2")
 
 #grafico
+#liquidez_corriente
+ggplot(indicador_financiero_2, aes(x = Tipo_de_empresa, y = liquidez_corriente_Promedio)) +
+  geom_bar(stat = "identity", fill = "green") +
+  labs(title = "Promedio Liquidez corriente por Estado y Provincia",
+       x = "Tipo de empresa", y = "Liquidez_corriente_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 6, angle = 90, hjust = 1)) +
+  guides(fill = guide_legend(ncol = 5))+
+  geom_text(aes(label = round(liquidez_corriente_Promedio, 2)),  
+            position = position_stack(vjust = 0.5),  
+            size = 3,                                 
+            color = "black") 
+
+#Endeudamiento__patrimonial_Promedio
+ggplot(indicador_financiero_2, aes(x = Tipo_de_empresa, y = endeudamiento_patrimonial_Promedio)) +
+  geom_bar(stat = "identity", fill = "pink") +
+  labs(title = "Promedio Endeudamiento Patrimonial por Estado y Provincia",
+       x = "Tipo de empresa", y = "Endeudamiento_patrimonial_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 6, angle = 90, hjust = 1)) +
+  guides(fill = guide_legend(ncol = 5))+
+  geom_text(aes(label = round(endeudamiento_patrimonial_Promedio, 2)),  
+            position = position_stack(vjust = 0.5),  
+            size = 3,                                 
+            color = "black") 
+
 #endeudamiento activo
   ggplot(indicador_financiero_2, aes(x = Tipo_de_empresa, y = endeudamiento_activo1_Promedio)) +
-  geom_bar(stat = "summary", position = "stack") +
+    geom_bar(stat = "identity", fill = "steelblue") +
   labs(title = "Promedio Endeudamiento Activo por Estado y Provincia",
        x = "Tipo de empresa", y = "Endeudamiento__activo_Promedio") +
   theme_classic() +
@@ -306,4 +338,6 @@ geom_text(aes(label = round(endeudamiento_activo1_Promedio, 2)),
 position = position_stack(vjust = 0.5),  
 size = 3,                                 
 color = "black") 
+  
+
 
