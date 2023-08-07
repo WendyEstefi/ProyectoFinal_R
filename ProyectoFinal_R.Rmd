@@ -11,18 +11,12 @@ output: pdf_document
 
 ```{r setup, eval=FALSE }
 
-library(missForest)
-library(readxl)
-library(tidyverse)
+library(openxlsx)
 library(tidyr)
-library(dplyr)
-library(palmerpenguins)
-library(purrr)
 library(ggplot2)
-library(kableExtra)
-
-balances_2014 <- read_excel("Data/balances_2014.xlsx",sheet = "v2014_activo1")
-names(balances_2014)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
 ```
 
 # Introducción
@@ -55,11 +49,12 @@ Mediante esta investigación, se espera aportar conocimientos útiles para compr
 
 El data set utilizado en este trabajo de investigación se denomina "Balances_2014" y contiene información financiera de diversas compañías del Ecuador para el año mencionado.
 
-```{r balances, eval=FALSE}
-balance_2014<-read.xlsx("Data/balances_2014.xlsx")
+```{r balances, echo=TRUE, eval=FALSE}
+balances_2014 <- read_xlsx("Data/balances_2014.xlsx")
+balances_2014
 ciiu<-read.xlsx("Data/ciiu.xlsx")
 cias<-read.xlsx("Data/cias_codebook.xlsx")
-balance_2014<-tibble(balance_2014)
+balances_2014<-tibble(balances_2014)
 
 El data frame balances_2014 contiene 47033 observaciones y 347 variables.
 ```
