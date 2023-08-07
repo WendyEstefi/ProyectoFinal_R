@@ -3,6 +3,8 @@
 install.packages("openxlsx")
 install.packages("missForest")
 install.packages("ggplot2")
+install.packages("rmarkdown")
+install.packages("latex")
 
 #cargar paquetes----
 library(missForest)
@@ -13,6 +15,8 @@ library(dplyr)
 library(palmerpenguins)
 library(purrr)
 library(ggplot2)
+library(rmarkdown)
+library(latex)
 
 
 # Importacion de datos ----
@@ -25,13 +29,13 @@ liquidez_corriente <- balances_2014 %>%
   mutate(v345 = coalesce(v345, 0),
          v539 = coalesce(v539, 0)) %>%
   mutate(liquidez_corriente = ifelse(v539 != 0 & is.finite(v345 / v539), round(v345 / v539, 5), NA))
+class(liquidez_corriente)
 
 # Endeudamiento del activo ----
 endeudamiento_activo <- balances_2014 %>% 
     mutate(v599 = coalesce(v599, 0),
            v499 = coalesce(v499, 0)) %>%
     mutate(endeudamiento_activo_1 = ifelse(v499 == 0, NA, round(v599 / v499, 5)))
-
 
 # Endeudamiento Patrimonial ----
 patrimonio <- balances_2014 %>%
@@ -41,7 +45,7 @@ endeudamiento_patrimonial <- balances_2014 %>%
   mutate(endeudamiento_patrimonial = round(v599 / v499, 5)) %>%
   na.omit() %>%
   filter(!is.infinite(endeudamiento_patrimonial))
-
+class(endeudamiento_patrimonial)
 
 # Endeudamiento Activo Fijo ----
 endeudamiento_activof <- data.frame(balances_2014 %>% 
@@ -52,6 +56,7 @@ apal <- balances_2014 %>%
   mutate(apalancamiento = v499 / patrimonio) %>%
   mutate(apalancamiento = replace(apalancamiento, is.na(apalancamiento), 0)) %>%
  mutate(apalancamiento = round(apalancamiento, 5))
+class(apal)
 
 # Parte 1----
 dim(balances_2014)
@@ -186,34 +191,119 @@ join_empresas<-select_balances_v1 %>%
 ###########       tibble 
 Empresas<-as.tibble(join_empresas) %>% 
   view("Empresas")
-head(Empresas)
-
+Empresas
 
 #2.Crea una tabla resumiendo el numero total de empresas por actividad economica
 # y por cada canton. la tabla simplemente debe aparecer 
 #como una data frame o tibble en tu script.
 
+data_actividad<- as_tibble(read_excel("data/ciiu.xlsx"))
+data_actividad<- data_actividad %>% filter(CODIGO=="A" | CODIGO=="B" | CODIGO=="C"| 
+                                             CODIGO=="D"|CODIGO=="E"|CODIGO=="F"|
+                                             CODIGO=="G"|CODIGO=="H"|CODIGO=="I"|
+                                             CODIGO=="J"|CODIGO=="K"|CODIGO=="L"|
+                                             CODIGO=="M"|CODIGO=="N"|CODIGO=="O"|
+                                             CODIGO=="P"|CODIGO=="Q"|CODIGO=="R"|
+                                             CODIGO=="S"|CODIGO=="T"|CODIGO=="U"|
+                                             CODIGO=="Z")
+data_actividad<-data_actividad %>%
+  select(CODIGO,DESCRIPCION)
+
 summary_empresas <- Empresas %>%
   group_by(Actividad_economica, canton) %>%
   summarize(Total_empresas = n()) %>% 
-  view("summary_empresas")
+  left_join(data_actividad,by=c("Actividad_economica"="CODIGO")) %>% 
+  view("summary_empresas_actividad_canton")
+summary_empresas
+
 
 #3.Graficamente muestra el comparartivo de los indicadoes financieros de liquidez
 #y solvencia por status y provincia.
 
-indicador_financiero_1<-Empresas %>% 
-  group_by(provincia, Status)%>% 
-  summarise_at(vars(liquidez_corriente,endeudamiento_patrimonial,
-                   endeudamiento_activo1),
-                   list( Promedio=~mean(.,na.rm =T))) %>% view("Resumen_1")
-#falta el grafico
+#liquidez corriente
+#tabla par acrear grafico 
+indicador_financiero_1 <- Empresas %>%
+  group_by(provincia, Status) %>%
+  summarise(across(c(liquidez_corriente, endeudamiento_patrimonial, endeudamiento_activo1),
+                   list(Promedio = ~ mean(., na.rm = TRUE))),
+            .groups = "drop")
+view(indicador_financiero_1)
+
+# Código para crear el gráfico
+ggplot(indicador_financiero_1, aes(x = provincia, y = liquidez_corriente_Promedio, 
+                                             fill = Status, color=Status)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Promedio de Liquidez Corriente por Estado y Provincia",
+       x = "Provincia", y = "Liquidez_corriente_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 8, angle = 90, hjust = 1)) 
+  #guides(fill = guide_legend(ncol = 5))+
+  #geom_text(aes(label = round(liquidez_corriente_Promedio, 2)), 
+            #position = position_stack(vjust = 0.5),   
+            #size = 3,                                 
+            #color = "black")
+
+#endeudamiento_patrimonial
+ggplot(indicador_financiero_1, aes(x = provincia, y = endeudamiento_patrimonial_Promedio, 
+                                             fill = Status, color=Status)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Promedio Endeudamiento Patrimonial por Estado y Provincia",
+       x = "Provincia", y = "Endeudamiento__patrimonial_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 8, angle = 90, hjust = 1)) 
+  #guides(fill = guide_legend(ncol = 5))+
+  #geom_text(aes(label = round(endeudamiento_patrimonial_Promedio, 2)),  
+            #position = position_stack(vjust = 0.5),  
+            #size = 3,                                 
+            #color = "black") 
+
+#endeudamiento_activo1
+ggplot(indicador_financiero_1, aes(x = provincia, y = endeudamiento_activo1_Promedio, 
+                                   fill = Status, color=Status)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Promedio Endeudamiento Activo por Estado y Provincia",
+       x = "Provincia", y = "Endeudamiento__activo_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 8, angle = 90, hjust = 1)) 
+  #guides(fill = guide_legend(ncol = 5))+
+  #geom_text(aes(label = round(endeudamiento_activo1_Promedio, 2)),  
+           #position = position_stack(vjust = 0.5),  
+            #size = 3,                                 
+            #color = "black") 
+
 
 #Graficamente muestra el comparativo de los indicadores financieros de liquidez
 # y solvencia por tipo de empresa.
+#tabla par acrear grafico
 indicador_financiero_2<-Empresas %>% 
 group_by(Tipo_de_empresa)%>% 
  summarise_at(vars(liquidez_corriente,endeudamiento_patrimonial,
                     endeudamiento_activo1),
                     list( Promedio=~mean(.,na.rm =T))) %>% view("Resumen_2")
-#falta el grafico
+
+#grafico
+#endeudamiento activo
+  ggplot(indicador_financiero_2, aes(x = Tipo_de_empresa, y = endeudamiento_activo1_Promedio)) +
+  geom_bar(stat = "summary", position = "stack") +
+  labs(title = "Promedio Endeudamiento Activo por Estado y Provincia",
+       x = "Tipo de empresa", y = "Endeudamiento__activo_Promedio") +
+  theme_classic() +
+  theme(legend.title = element_text(size = 8),
+        legend.text = element_text(size = 8 ),
+        legend.position = "bottom",
+        axis.text.x = element_text(size = 6, angle = 90, hjust = 1)) +
+guides(fill = guide_legend(ncol = 5))+
+geom_text(aes(label = round(endeudamiento_activo1_Promedio, 2)),  
+position = position_stack(vjust = 0.5),  
+size = 3,                                 
+color = "black") 
 
