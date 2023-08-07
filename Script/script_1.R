@@ -283,14 +283,15 @@ ggplot(indicador_financiero_1, aes(x = provincia, y = endeudamiento_activo1_Prom
 
 #Graficamente muestra el comparativo de los indicadores financieros de liquidez
 # y solvencia por tipo de empresa.
-#tabla par acrear grafico
+
+#tabla para crear grafico
 indicador_financiero_2<-Empresas %>% 
 group_by(Tipo_de_empresa)%>% 
  summarise_at(vars(liquidez_corriente,endeudamiento_patrimonial,
                     endeudamiento_activo1),
                     list( Promedio=~mean(.,na.rm =T))) %>% view("Resumen_2")
 
-#grafico
+#graficos 
 #liquidez_corriente
 ggplot(indicador_financiero_2, aes(x = Tipo_de_empresa, y = liquidez_corriente_Promedio)) +
   geom_bar(stat = "identity", fill = "green") +
@@ -339,5 +340,4 @@ position = position_stack(vjust = 0.5),
 size = 3,                                 
 color = "black") 
   
-
 
