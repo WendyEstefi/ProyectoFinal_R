@@ -1,0 +1,186 @@
+---
+title: "Proyecto Módulo R - New Dimensions"
+author: "Mercedes Gómez, Wendy Chicaiza, Jessy Suarez"
+date: "2023-08-06"
+output: pdf_document
+---
+
+### **Setup**
+
+### **Load packages**
+
+```{r setup, eval=FALSE }
+
+library(openxlsx)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+# Introducción
+
+El presente trabajo de investigación científica se centra en el análisis de la base de datos de balances suministrados por la Superintendencia de Bancos y Compañías del Ecuador.
+
+Se utilizarán ratios financieros como herramientas de medición. Los ratios financieros son indicadores clave que proporcionan una visión detallada del rendimiento económico y financiero de las empresas. En este proyecto, se utilizarán los siguientes ratios para comparar el desempeño de las empresas.
+
+-   ***Liquidez corriente:*** Esta ratio evalúa la capacidad de una empresa para cubrir sus obligaciones a corto plazo. Se calcula dividiendo el activo corriente entre el pasivo corriente.
+
+-   ***Solvencia:*** La solvencia es un indicador de la capacidad de una empresa para hacer frente a sus deudas. En este estudio, se evaluará el endeudamiento del activo, el endeudamiento patrimonial y el endeudamiento del activo fijo.
+
+-   ***Apalancamiento:*** Esta ratio muestra el grado de endeudamiento de una empresa en relación con su patrimonio. Se obtiene al dividir el activo entre el patrimonio.
+
+El enfoque de comparar empresas según su tamaño permitirá identificar posibles diferencias significativas en su salud financiera. Además, el estudio proporcionará información valiosa sobre cómo diferentes niveles de empleados directos y administrativos pueden influir en la liquidez de las pequeñas empresas.
+
+Finalmente, el trabajo también presenta un análisis del top 10 de empresas con el mayor apalancamiento, lo que arrojará luces sobre aquellas empresas que tienen una alta dependencia del endeudamiento en su estructura financiera.
+
+Mediante esta investigación, se espera aportar conocimientos útiles para comprender mejor la situación financiera de las empresas en el Ecuador, así como destacar la importancia de los indicadores financieros como herramientas fundamentales para la toma de decisiones en el ámbito empresarial.
+
+## Objetivos del proyecto
+
+1.  El objetivo principal de esta investigación es comparar el endeudamiento del activo entre empresas micro y pequeñas frente a las grandes empresas.
+
+2.  Asimismo, se pretende evaluar las diferencias en la liquidez entre pequeñas empresas que cuentan con más de 60 trabajadores directos y aquellas que tienen entre 100 y 800 trabajadores administrativo.
+
+3.  De igual manera pretende conocer las empresas con mayor apalancamiento dentro del año 2014.
+
+# Datos
+
+El data set utilizado en este trabajo de investigación se denomina "Balances_2014" y contiene información financiera de diversas compañías del Ecuador para el año mencionado.
+
+```{r balances, echo=TRUE, eval=FALSE}
+balances_2014 <- read_xlsx("Data/balances_2014.xlsx")
+balances_2014
+ciiu<-read.xlsx("Data/ciiu.xlsx")
+cias<-read.xlsx("Data/cias_codebook.xlsx")
+balances_2014<-tibble(balances_2014)
+
+El data frame balances_2014 contiene 47033 observaciones y 347 variables.
+```
+
+La tabla está compuesta por 9 variables, cada una de las cuales representa diferentes aspectos relevantes para el análisis financiero.
+
+Las variables son las siguientes:
+
+1.  ***Empresas:*** Representa el nombre de cada empresa en el dataset.
+
+2.  ***Status:*** Indica si la empresa está activa o no.
+
+3.  ***Tipo_de_empresa:*** Clasifica la empresa en diferentes tipos de entidad.
+
+4.  ***Pais:*** Indica el país de origen de la empresa (en este caso, todas las empresas son del Ecuador).
+
+5.  ***Provincia:*** Representa la provincia en la que se encuentra ubicada la empresa.
+
+6.  ***Canton:*** Representa el cantón en el que se encuentra ubicada la empresa.
+
+7.  ***Ciudad:*** Indica la ciudad donde tiene su sede la empresa.
+
+8.  ***Actividad_economica:*** Clasifica la actividad económica de la empresa según un código CIIU4 de nivel 1.
+
+9.  ***Subactividad:*** Clasifica la actividad económica de la empresa con un código CIIU4 de nivel 6, que ofrece mayor detalle sobre la actividad.
+
+La tabla de Empresas se ha complementado con el cálculo de varios indicadores financieros, que son de interés para el estudio. Los indicadores financieros presentados son:
+
+1.  ***Liquidez_corriente:*** Representa la liquidez corriente de cada empresa, calculada como el cociente del activo corriente entre el pasivo corriente.
+
+```{r Liquidez Corriente, eval=FALSE, fig.width=2}
+    # Liquidez Corriente
+    balances_2014 <- balances_2014 %\>%
+    mutate(v345 = coalesce(v345, 0),
+    v539 = coalesce(v539, 0)) %\>%
+    mutate(liquidez_corriente = ifelse(v539 != 0 & is.finite(v345 / v539), round(v345 / v539, 5), NA))
+
+```
+
+Esto se entiende como:
+
+[Liquidez corriente]{style="color: red;"} = Activo Corriente / Pasivo Corriente
+
+2\. ***Endeudamiento_del_activo:*** Indica el endeudamiento del activo para cada empresa, calculado como el cociente del pasivo entre el activo total.
+
+```{r Endeudamiento del activo, eval=FALSE, fig.width=2}
+balances_2014 <- balances_2014 %>% 
+    mutate(v599 = coalesce(v599, 0),
+           v499 = coalesce(v499, 0)) %>%
+    mutate(endeudamiento_activo_1 = ifelse(v499 == 0, NA, round(v599 / v499, 5)))
+```
+
+Esto se entiende como:
+
+[Endeudamiento del activo]{style="color: red;"} = Pasivo / Activo
+
+3.  ***Endeudamiento_patrimonial:*** Muestra el endeudamiento patrimonial de cada empresa, calculado como el cociente del pasivo entre el patrimonio neto.
+
+```{r Endeudamiento Patrimonial, eval=FALSE}
+patrimonio <- balances_2014 %>%
+  transmute(patrimonio = round(coalesce(v499 - v599, NA), 5))
+
+balances_2014 <- balances_2014 %>% 
+  mutate(endeudamiento_patrimonial = round(v599 / v499, 5)) %>%
+  na.omit() %>%
+  filter(!is.infinite(endeudamiento_patrimonial))
+```
+
+Esto se entiende como:
+
+[Endeudamiento Patrimonial]{style="color: red;"} = Pasivo / Patrimonio
+
+4.  ***Endeudamiento_activo_fijo:*** Indica el endeudamiento del activo fijo para cada empresa, calculado como el cociente del patrimonio neto entre el activo no corriente.
+
+```{r Endeudamiento Activo Fijo, eval=FALSE}
+endeudamiento_activof <- data.frame(balances_2014 %>% 
+  mutate(endeudamiento_activof = patrimonio/v498))
+```
+
+Esto se entiende como:
+
+[Endeudamiento Activo Fijo]{style="color: red;"} = Patrimonio / Activo No Corriente
+
+5.  ***Apalancamiento:*** Representa el apalancamiento financiero de cada empresa, calculado como el cociente del activo total entre el patrimonio neto.
+
+```{r Apalancamiento, eval=FALSE}
+apal <- balances_2014 %>%
+  mutate(apalancamiento = v499 / patrimonio) %>%
+  mutate(apalancamiento = replace(apalancamiento, is.na(apalancamiento), 0)) %>%
+  mutate(apalancamiento = round(apalancamiento, 5))
+```
+
+Esto se entiende como:
+
+[Apalancamiento]{style="color: red;"} = Activo / Patrimonio
+
+## Análisis
+
+**Preguntas de investigación:**
+
+***¿El endeudamiento del activo fue mayor en empresas micro + pequeñas vs. grandes?***
+
+Los resultados muestran el endeudamiento del activo total para las empresas micro + pequeñas y para las empresas grandes. Luego, se concluye que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes.
+
+Es posible que en Ecuador se observe que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes debido a varias razones económicas y financieras que pueden afectar a las empresas de diferentes tamaños.
+
+Algunos posibles factores que podrían contribuir a esta diferencia son:
+
+1. Acceso a financiamiento: Las empresas grandes suelen tener acceso más fácil a financiamiento debido a su tamaño, historial crediticio y capacidad para ofrecer garantías. Por otro lado, las micro y pequeñas empresas pueden tener dificultades para acceder a préstamos y, en muchos casos, deben recurrir a deudas para financiar sus operaciones y proyectos de expansión.
+
+2. Capacidad de endeudamiento: Las empresas grandes generalmente tienen más activos y mayores flujos de ingresos que las empresas más pequeñas. Esto les permite tener una mayor capacidad de endeudamiento y tomar préstamos más grandes sin afectar significativamente su relación deuda-ingresos. En cambio, las micro y pequeñas empresas pueden tener una capacidad de endeudamiento limitada y pueden estar más expuestas a riesgos financieros.
+
+3. Estrategias de crecimiento: Las empresas grandes pueden utilizar estrategias de crecimiento más conservadoras y financiar su expansión a través de utilidades retenidas o de inversionistas. Por otro lado, las empresas más pequeñas pueden optar por utilizar deudas para expandirse rápidamente y competir en el mercado.
+
+4. Ciclos económicos: Las condiciones económicas y los ciclos comerciales pueden afectar a las empresas de manera diferente según su tamaño. Durante períodos de crecimiento económico, es posible que las empresas grandes prefieran financiar su expansión a través de capital propio o inversionistas, mientras que las empresas más pequeñas pueden preferir tomar préstamos para aprovechar las oportunidades de crecimiento.
+
+Esto se infiere ya que el resultado mostrado es el siguiente: 
+
+
+***¿La liquidez por tipo de compañía es diferente entre aquellas empresas que tienen más de 60 trabajadores directos y que cuenta con 100 a 800 trabajadores administrativos?***
+
+***Top 10 de empresas con mayor apalancamiento.***
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
