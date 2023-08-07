@@ -21,8 +21,8 @@ library(purrr)
 library(ggplot2)
 library(kableExtra)
 
-balances_2014 <- read_excel("Data/balances_2014.xlsx")
-
+balances_2014 <- read_excel("Data/balances_2014.xlsx",sheet = "v2014_activo1")
+names(balances_2014)
 ```
 
 # Introducción
@@ -57,6 +57,9 @@ El data set utilizado en este trabajo de investigación se denomina "Balances_20
 
 ```{r balances, eval=FALSE}
 dim(balances_2014)
+sapply(balances_2014, class)
+str(balances_2014)
+names(balances_2014)
 
 El data frame balances_2014 contiene 47033 observaciones y 347 variables.
 ```
@@ -159,15 +162,16 @@ Esto se entiende como:
 
 ***¿El endeudamiento del activo fue mayor en empresas micro + pequeñas vs. grandes?***
 
-
 Los resultados muestran el endeudamiento del activo total para las empresas micro + pequeñas y para las empresas grandes. Luego, se concluye que el endeudamiento del activo es mayor en las micro y pequeñas empresas que en las grandes.
 
-Esto se infiere ya que el resultado mostrado es el siguiente:
+Esto se infiere ya que el resultado mostrado es el siguiente: 
+
 
 
 ***¿La liquidez por tipo de compañía es diferente entre aquellas empresas que tienen más de 60 trabajadores directos y que cuenta con 100 a 800 trabajadores administrativos?***
 
 ***Top 10 de empresas con mayor apalancamiento.***
+
 
 ```{r pressure, echo=FALSE}
 plot(pressure)
